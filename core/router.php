@@ -1,6 +1,6 @@
 <?php
-
-class router
+namespace Core;
+class Router
 {
     private $route = [];
     private $allowedMethods = ['get', 'post'];
