@@ -12,3 +12,5 @@ $routes->notFound(function(){
     echo '404';
 });
 
+
+$routes->get('/sc', 'HomesController@index');
