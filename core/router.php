@@ -1,13 +1,15 @@
 <?php
+
 namespace Core;
 class Router
 {
     private $route = [];
+    private $autoResolve;
     private $allowedMethods = ['get', 'post'];
 
-    private function addRoute($method, $url, $callback): void
+    public function __construct($autoResolve = false)
     {
-        $this->route[$method][trim($url, '/')] = ['callback' => $callback];
+        $this->autoResolve = $autoResolve;
     }
 
     public function __call($func_name, $args): void
@@ -17,6 +19,12 @@ class Router
         }
     }
 
+    private function addRoute($method, $url, $callback): void
+    {
+        $this->route[$method][trim($url, '/')] = ['callback' => $callback];
+    }
+
+
     public function notFound($callback): void
     {
         $this->addRoute('error', 404, $callback);
@@ -25,19 +33,6 @@ class Router
     public function index($callback): void
     {
         $this->addRoute('get', '', $callback);
-    }
-
-    public function forceHttps()
-    {
-        if (empty($_SERVER["HTTPS"]) || $_SERVER["HTTPS"] != "on") {
-            header("Location: https://" . $_SERVER["HTTP_HOST"] . $_SERVER["REQUEST_URI"]);
-            exit();
-        }
-    }
-
-    private function isIndex($url): bool
-    {
-        return empty($url) || in_array($url, $this->indexUrls);
     }
 
     private function getRequestURI(): string
@@ -52,31 +47,39 @@ class Router
         return isset($this->route[$method][$route]);
     }
 
-    private function invokeRoute($method, $route, $args = array()): void
+    private function getRouteCallback($method, $route)
     {
-        try {
-            call_user_func_array($this->route[$method][$route]['callback'], $args);
-        } catch (ArgumentCountError $e) {
-            $this->invokeNotFound();
+        if ($this->routeExists($method, $route)) {
+            return $this->route[$method][$route]['callback'];
         }
     }
 
-    private function invokeNotFound()
+    private function getNotFoundCallback()
     {
-        if ($this->routeExists('error', 404)) {
-            $this->invokeRoute('error', 404);
+        return $this->getRouteCallback('error', 404);
+    }
+
+    public function invokeCallback($callback, $args = array()): void
+    {
+        if (is_callable($callback)) {
+            try {
+                call_user_func_array($callback, $args);
+            } catch (ArgumentCountError $e) {
+                $this->invokeCallback($this->getNotFoundCallback());
+            }
         }
     }
 
-    public function run($customRoute = '', $customMethod = 'get'): void
+    private function run(): void
     {
-        if ($customRoute != '') {
-            $url = $customRoute;
-            $method = $customMethod;
-        } else {
-            $method = strtolower($_SERVER['REQUEST_METHOD']);
-            $url = $this->getRequestURI();
-        }
+        $currentRoute = $this->resolve();
+        $this->invokeCallback($currentRoute['callback'], $currentRoute['args']);
+    }
+
+    public function resolve(): array
+    {
+        $method = strtolower($_SERVER['REQUEST_METHOD']);
+        $url = $this->getRequestURI();
 
         $urlParts = explode('/', $url);
 
@@ -85,16 +88,17 @@ class Router
             if ($this->routeExists($method, $findRoute)) {
                 $route = $findRoute;
                 $args = array_filter(array_slice($urlParts, count($urlParts) - $i));
-                $this->invokeRoute($method, $route, $args);
-                return;
+                return ['callback' => $this->getRouteCallback($method, $route), 'args' => $args];
             }
         }
 
-        $this->invokeNotFound();
+        return ['callback' => $this->getNotFoundCallback(), 'args' => []];
     }
 
     public function __destruct()
     {
-        $this->run();
+        if ($this->autoResolve) {
+            $this->run();
+        }
     }
 }

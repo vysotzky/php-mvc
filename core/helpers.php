@@ -7,6 +7,6 @@ function getRequestProtocol() : string {
         return !empty($_SERVER['HTTPS']) ? "https" : "http";
 }
 
-function registerRoutes(&$routes, string $name) : void {
+function registerRoutes(\Core\Router &$routes, string $name) : void {
     require_once("../routes/{$name}.php");
 }
