@@ -7,8 +7,7 @@ class Router
     private $autoResolve;
     private $allowedMethods = ['get', 'post'];
 
-    public function __construct($autoResolve = false)
-    {
+    public function __construct($autoResolve = false){
         $this->autoResolve = $autoResolve;
     }
 
@@ -61,10 +60,10 @@ class Router
 
     public function invokeCallback($callback, $args = array()): void
     {
-        if (is_callable($callback)) {
+        if(is_callable($callback)) {
             try {
                 call_user_func_array($callback, $args);
-            } catch (ArgumentCountError $e) {
+            } catch (\ArgumentCountError $e) {
                 $this->invokeCallback($this->getNotFoundCallback());
             }
         }
@@ -92,12 +91,12 @@ class Router
             }
         }
 
-        return ['callback' => $this->getNotFoundCallback(), 'args' => []];
+        return ['callback' => $this->getNotFoundCallback(), 'args'=>[]];
     }
 
     public function __destruct()
     {
-        if ($this->autoResolve) {
+        if($this->autoResolve) {
             $this->run();
         }
     }
