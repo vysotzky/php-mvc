@@ -9,7 +9,6 @@ if (false == true && getRequestProtocol() == "http") {
     exit();
 }
 
-
 class DB
 {
     private static $instance = null;
@@ -40,19 +39,15 @@ class DB
     }
 }
 
-
 spl_autoload_register(function ($class) {
     if (class_exists($class)) {
         return true;
     }
-
     $file = __DIR__.DIRECTORY_SEPARATOR.str_replace('\\', DIRECTORY_SEPARATOR, $class).'.php';
-
     if(file_exists($file)) {
         require_once $file;
-    } else {
-        return false;
     }
+    return false;
 });
 
 
@@ -67,7 +62,7 @@ if(!empty($callback)) {
         $controllerName = "App\\Controllers\\{$controllerParts[0]}";
         $controllerMethod = $controllerParts[1];
         if (!class_exists($controllerName, true)) {
-            throw new Exception("Controller '{$controllerName} doesn't exist");
+            throw new Exception("Controller '{$controllerName}' doesn't exist");
         } else {
             $controller = new $controllerName;
         }
@@ -82,8 +77,6 @@ if(!empty($callback)) {
     }
     $routes->invokeCallback($callback, $args);
 }
-
-
 
 //$Database = \DB::getDB();
 //$Positions = new \Models\Positions;
