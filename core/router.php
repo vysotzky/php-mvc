@@ -3,12 +3,17 @@
 namespace Core;
 class Router
 {
-    private $route = [];
-    private $autoResolve;
-    private $allowedMethods = ['get', 'post'];
+    protected $route = [];
+    protected $autoResolve;
+    protected $allowedMethods = ['get', 'post'];
 
     public function __construct($autoResolve = false){
         $this->autoResolve = $autoResolve;
+    }
+
+    protected function addRoute($method, $url, $callback): void
+    {
+        $this->route[$method][trim($url, '/')] = ['callback' => $callback];
     }
 
     public function __call($func_name, $args): void
@@ -17,12 +22,6 @@ class Router
             $this->addRoute($func_name, $args[0], $args[1]);
         }
     }
-
-    private function addRoute($method, $url, $callback): void
-    {
-        $this->route[$method][trim($url, '/')] = ['callback' => $callback];
-    }
-
 
     public function notFound($callback): void
     {
@@ -34,26 +33,27 @@ class Router
         $this->addRoute('get', '', $callback);
     }
 
-    private function getRequestURI(): string
+    public function getRequestURI(): string
     {
         return trim(str_replace(dirname($_SERVER['SCRIPT_NAME']) . '/',
             "", $_SERVER['REQUEST_URI']), '/');
 
     }
 
-    private function routeExists($method, $route): bool
+    public function routeExists($method, $route): bool
     {
         return isset($this->route[$method][$route]);
     }
 
-    private function getRouteCallback($method, $route)
+    public function getRouteCallback($method, $route)
     {
         if ($this->routeExists($method, $route)) {
             return $this->route[$method][$route]['callback'];
         }
+        return false;
     }
 
-    private function getNotFoundCallback()
+    public function getNotFoundCallback()
     {
         return $this->getRouteCallback('error', 404);
     }
@@ -69,7 +69,7 @@ class Router
         }
     }
 
-    private function run(): void
+    public function run(): void
     {
         $currentRoute = $this->resolve();
         $this->invokeCallback($currentRoute['callback'], $currentRoute['args']);
