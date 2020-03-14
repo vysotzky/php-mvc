@@ -1,5 +1,5 @@
 <?php
-namespace Models;
+namespace App\Models;
 
 abstract class Model{
     protected $table = '';
@@ -7,7 +7,10 @@ abstract class Model{
 
     public function  __construct()
     {
-        $this->db = \DB::getDB();
+        $this->db = \Database::getDB();
+        if($this->table == ''){
+            echo 'Test';
+        }
     }
 
     public function add($fields){

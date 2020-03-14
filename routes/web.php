@@ -2,15 +2,13 @@
 
 // Web routes for your app
 
-$routes->get('/', function(){
-    echo "Hello world";
-});
+$routes->get('/', 'HomeController@index');
 
-$routes->get('/c', 'HomeController@index');
+$routes->get('/sample-route', function($param, $optional_param=''){
+    echo "Parameter = {$param}<br/>";
+    echo "Optional parameter: {$optional_param}";
+});
 
 $routes->notFound(function(){
-    echo '404';
+    echo 'Page not found';
 });
-
-
-$routes->get('/sc', 'HomesController@index');
