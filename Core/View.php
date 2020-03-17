@@ -5,7 +5,6 @@ interface IView {
     public static function addGlobalVar($key, $value) : void;
 }
 
-
 class View implements IView
 {
     private static $engine = null;
