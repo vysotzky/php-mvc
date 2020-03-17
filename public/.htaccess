@@ -1,0 +1,10 @@
+Options +FollowSymLinks
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ index.php [NC,L,QSA]
+
+<IfModule mod_php5.c>
+   php_value upload_max_filesize 40M
+   php_value post_max_size 40M
+</IfModule>
