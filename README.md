@@ -11,6 +11,7 @@ git clone https://github.com/vysotzky/php-simple-mvc.git path/to/project
 ```bash
 composer require
 ```
+PHP 7 required
 ## Fast usage
 1. Point your server root to /public/ folder 
 2. Set your Core/Config.php
