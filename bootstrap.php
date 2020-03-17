@@ -17,7 +17,7 @@ spl_autoload_register(function ($class) {
     if (class_exists($class)) {
         return true;
     }
-    $file = ROOT . DIRECTORY_SEPARATOR. str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php';
+    $file = ROOT . DIRECTORY_SEPARATOR . str_replace('\\', DIRECTORY_SEPARATOR, $class) . '.php';
 
     if (file_exists($file)) {
         require_once $file;
@@ -27,9 +27,6 @@ spl_autoload_register(function ($class) {
 
 // Initialize template engine
 View::init();
-
-// Initialize database
-Database::init();
 
 // Initialize router
 $routes = new \Core\Router;

@@ -1,8 +1,12 @@
 <?php
-interface IView {
-    public static function init() : void;
-    public static function render($file, $vars) : string;
-    public static function addGlobalVar($key, $value) : void;
+
+interface IView
+{
+    public static function init(): void;
+
+    public static function render($file, $vars): string;
+
+    public static function addGlobalVar($key, $value): void;
 }
 
 class View implements IView
@@ -11,7 +15,7 @@ class View implements IView
 
     public static function init(): void
     {
-        $loader = new \Twig\Loader\FilesystemLoader(ROOT . "/". PATH_VIEWS . "/");
+        $loader = new \Twig\Loader\FilesystemLoader(ROOT . "/" . PATH_VIEWS . "/");
         $twig = new \Twig\Environment($loader);
         self::$engine = $twig;
     }
@@ -22,7 +26,8 @@ class View implements IView
         return $template->render($vars);
     }
 
-    public static function addGlobalVar($key, $value) : void {
+    public static function addGlobalVar($key, $value): void
+    {
         self::$engine->addGlobal($key, $value);
     }
 }

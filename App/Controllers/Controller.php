@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Controllers;
 
 abstract class Controller
@@ -13,7 +14,8 @@ abstract class Controller
         // method called at the end of controller execution
     }
 
-    public function __destruct(){
+    public function __destruct()
+    {
         $this->after();
     }
 }
