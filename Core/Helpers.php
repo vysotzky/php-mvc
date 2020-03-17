@@ -8,5 +8,13 @@ function getRequestProtocol() : string {
 }
 
 function registerRoutes(\Core\Router &$routes, string $name) : void {
-    require_once("../routes/{$name}.php");
+    require_once(ROOT."/".PATH_ROUTES."/{$name}.php");
+}
+
+function view($file, $vars = array()) : string {
+    return \View::render($file, $vars);
+}
+
+function addViewVar($key, $value) : void {
+    \View::addGlobalVar($key, $value);
 }

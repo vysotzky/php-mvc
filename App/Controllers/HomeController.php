@@ -1,8 +1,11 @@
 <?php
+
 namespace App\Controllers;
 
-class HomeController extends Controller {
-    function index(){
-        echo 'Hello world';
+class HomeController extends Controller
+{
+    function index()
+    {
+        echo view('index.html');
     }
 }
