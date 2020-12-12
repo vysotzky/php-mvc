@@ -5,7 +5,7 @@ class Database
     private static $instance = null;
     private $db;
 
-    private function __construct()
+    public function __construct()
     {
         $host = DB_HOST;
         $user = DB_USER;
